@@ -1,7 +1,5 @@
 <?php
-
 namespace Database\Seeders;
-
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Genre;
@@ -16,14 +14,13 @@ class MovieSeeder extends Seeder
      */
     public function run()
     {
-
         Movie :: factory() -> count(100) -> make() -> each(function($p) {
-            $genres = Genre :: inRandomOrder() -> first();
-            $p -> genres() -> associate($genres);
+            $genre = Genre :: inRandomOrder() -> first();
+            $p->genre_id = $genre->id;
             $p -> save();
 
-            $tag = Tag :: inRandomOrder() -> limit(rand(1, 5)) -> get();
-            $p -> tags() -> attach($tag);
+            $tags = Tag :: inRandomOrder() -> limit(rand(1, 5)) -> get();
+            $p -> tags() -> attach($tags);
         });
     }
 }
