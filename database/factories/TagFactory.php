@@ -11,8 +11,8 @@ class TagFactory extends Factory
     public function definition()
     {
         return [
-            'name' => fake() -> words(rand(1, 2), true),
-            'description' => fake() -> text(rand(50, 200)),
+            'name' => fake() -> unique() -> words(rand(1, 3), true),
+            'description' => fake() -> boolean() ? fake() -> text() : null,
         ];
     }
 }
