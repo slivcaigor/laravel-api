@@ -6,6 +6,9 @@
     <a href="{{ route('movie.create') }}">CREATE NEW MOVIE</a>
     <ul>
         @foreach ($movies as $movie)
+        <a href="{{ route('movie.edit', $movie) }}">
+            EDIT
+        </a>
             @include('components.movie.movie-elem')
         @endforeach
     </ul>
