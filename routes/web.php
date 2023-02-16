@@ -17,3 +17,7 @@ Route :: get('/movie/edit/{movie}', [MainController :: class, 'movieEdit'])
     -> name('movie.edit');
 Route :: post('/movie/edit/{movie}', [MainController :: class, 'movieUpdate'])
     -> name('movie.update');
+
+
+Route :: get('/movie/delete/{movie}', [MainController :: class, 'movieDelete'])
+    -> name('movie.delete');
