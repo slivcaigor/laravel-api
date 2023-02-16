@@ -31,23 +31,24 @@ class MainController extends Controller
 
     public function movieStore(Request $request) {
 
-        $data = $request->validate([
-            'name' => 'required|string|max:64',
-            'year' => 'required|numeric',
-            'cashout' => 'required|numeric',
-            'tag_id' => 'required|integer',
-            'genres' => 'required|array'
+        $data = $request -> validate([
+            'name' => 'required|string|min:3',
+            'year' => 'required|integer|min:0',
+            'cashout' => 'required|integer|min:0',
+            'genre_id' => 'required|integer|min:1',
+            'tags_id' => 'required|array'
         ]);
-    
+
+        $genre = Genre :: find($data['genre_id']);
         $movie = Movie :: make($data);
-        $genre = Genre :: find($data['genres']);
 
         $movie -> genre() -> associate($genre);
         $movie -> save();
-        
-        $tag = Tag :: find($data['tag_id']);
-        $movie -> tags() -> attach($tag);
-        return redirect()->route('movie.home');
+
+        $tags = Tag :: find($data['tags_id']);
+        $movie -> tags() -> sync($tags);
+
+        return redirect() -> route('home');
     }
     
     

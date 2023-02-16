@@ -1,33 +1,36 @@
 @extends('layouts.main-layout')
 
 @section('content')
-    
+
     <h1>CREATE NEW MOVIE</h1>
-    <form action="{{ route('movie.store') }}" method="POST">
+    <form method="POST" action="{{ route('movie.store') }}">
         @csrf
         <label for="name">Name</label>
         <input type="text" name="name">
         <br>
         <label for="year">Year</label>
-        <input type="text" name="year">
+        <input type="number" name="year">
         <br>
-        <label for="cashout">Cashout</label>
-        <input type="text" name="cashout">
+        <label for="cashout">Cash out</label>
+        <input type="number" name="cashout">
         <br>
-        <label for="tag">Tag</label>
-        <select name="tag_id">
-            @foreach ($tags as $tag)
-                <option value="{{ $tag -> id }}">{{ $tag -> name }}</option>    
+        <label for="genre_id">Genre</label>
+        <select name="genre_id">
+            @foreach ($genres as $genre)
+                <option value="{{ $genre -> id }}">
+                    {{ $genre -> name }}
+                </option>
             @endforeach
         </select>
         <br>
-        <h3>Genres</h3>
-        @foreach ($genres as $genre)
-            <input type="checkbox" name="genres[]" value={{ $genre -> id }}>
-            <label for="genres">{{ $genre -> name }}</label>
-            <br>           
+        <label>Tag</label>
+        <br>
+        @foreach ($tags as $tag)
+            <input type="checkbox" name="tags_id[]" value="{{ $tag -> id }}" id="{{ $tag -> id }}">
+            <label for="{{ $tag -> id }}">{{ $tag -> name }}</label>
+            <br>
         @endforeach
         <input type="submit" value="CREATE MOVIE">
     </form>
 
-@endsection 
+@endsection
