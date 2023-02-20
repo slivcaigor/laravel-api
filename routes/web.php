@@ -22,5 +22,3 @@ Route :: post('/movie/edit/{movie}', [MainController :: class, 'movieUpdate'])
 
 Route :: get('/movie/delete/{movie}', [MainController :: class, 'movieDelete'])
     -> name('movie.delete');
-
-Route :: get('/api/v1/movie/all', [ApiController :: class, 'movieAll']);
