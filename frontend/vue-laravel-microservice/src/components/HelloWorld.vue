@@ -4,12 +4,22 @@ import axios from "axios";
 const API_URL = "http://localhost:8000/api/";
 const API_VER = "v1/";
 const API = API_URL + API_VER;
+
+const EMPTY_NEW_MOVIE = {
+    tags_id: [],
+};
 export default {
     data() {
         return {
             movies: [],
             genres: [],
             tags: [],
+
+            state: {
+                movieForm: false,
+            },
+
+            new_movie: { ...EMPTY_NEW_MOVIE },
         };
     },
     methods: {
@@ -34,6 +44,10 @@ export default {
                 })
                 .catch((err) => console.log);
         },
+        closeForm() {
+            this.new_movie = { ...EMPTY_NEW_MOVIE };
+            this.state.movieForm = false;
+        },
     },
     mounted() {
         this.updateData();
@@ -42,8 +56,49 @@ export default {
 </script>
 
 <template>
-    <div>
-        <h1>Movies</h1>
+    <h1>Movies</h1>
+    <form v-if="state.movieForm">
+        <label for="name">Name</label>
+        <input type="text" name="name" v-model="new_movie.name" />
+        <br />
+        <label for="year">Year</label>
+        <input type="number" name="year" v-model="new_movie.year" />
+        <br />
+        <label for="cashOut">Cash out</label>
+        <input type="number" name="cashOut" v-model="new_movie.cashOut" />
+        <br />
+        <label for="genre">Genre</label>
+        <select name="genre_id" v-model="new_movie.genre_id">
+            <option v-for="genre in genres" :key="genre.id" :value="genre.id">
+                {{ genre.name }}
+            </option>
+        </select>
+        <br />
+        <label>Tags:</label>
+        <br />
+        <div v-for="tag in tags" :key="tag.id">
+            <input
+                type="checkbox"
+                :id="'tag-' + tag.id"
+                :value="tag.id"
+                v-model="new_movie.tags_id"
+            />
+            <label :for="'tag-' + tag.id">{{ tag.name }}</label>
+        </div>
+
+        <button @click="closeForm">CANCEL</button>
+        <input
+            type="submit"
+            @click="submitMovie"
+            :value="
+                'id' in new_movie
+                    ? 'UPDATE MOVIE: ' + new_movie.id
+                    : 'CREATE NEW MOVIE'
+            "
+        />
+    </form>
+    <div v-else>
+        <button @click="state.movieForm = true">CREATE NEW MOVIE</button>
         <ul>
             <li v-for="movie in movies" :key="movie.id">
                 {{ movie.name }}
