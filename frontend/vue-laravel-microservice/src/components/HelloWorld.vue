@@ -48,6 +48,32 @@ export default {
             this.new_movie = { ...EMPTY_NEW_MOVIE };
             this.state.movieForm = false;
         },
+        submitMovie(e) {
+            e.preventDefault();
+
+            const new_movie = this.new_movie;
+            const actualApi =
+                API +
+                ("id" in new_movie
+                    ? "movie/update/" + this.new_movie.id
+                    : "movie/store");
+
+            console.log(new_movie);
+            console.log(actualApi);
+
+            axios
+                .post(actualApi, new_movie)
+                .then((res) => {
+                    const data = res.data;
+                    const success = data.success;
+
+                    if (success) {
+                        this.closeForm();
+                        this.updateData();
+                    }
+                })
+                .catch((err) => console.log);
+        },
     },
     mounted() {
         this.updateData();
