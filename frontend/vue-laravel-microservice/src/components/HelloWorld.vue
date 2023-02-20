@@ -74,6 +74,20 @@ export default {
                 })
                 .catch((err) => console.log);
         },
+        editMovie(movie) {
+            console.log("movie", movie);
+            console.log("new_movie", this.new_movie);
+
+            this.new_movie = { ...movie };
+
+            this.new_movie.tags_id = [];
+            for (let x = 0; x < movie.tags.length; x++) {
+                const tag = movie.tags[x];
+                this.new_movie.tags_id.push(tag.id);
+            }
+
+            this.state.movieForm = true;
+        },
     },
     mounted() {
         this.updateData();
@@ -90,8 +104,8 @@ export default {
         <label for="year">Year</label>
         <input type="number" name="year" v-model="new_movie.year" />
         <br />
-        <label for="cashOut">Cash out</label>
-        <input type="number" name="cashOut" v-model="new_movie.cashOut" />
+        <label for="cashout">Cash out</label>
+        <input type="number" name="cashout" v-model="new_movie.cashout" />
         <br />
         <label for="genre">Genre</label>
         <select name="genre_id" v-model="new_movie.genre_id">
@@ -129,6 +143,7 @@ export default {
             <li v-for="movie in movies" :key="movie.id">
                 {{ movie.name }}
                 <br />
+                <button @click="editMovie(movie)">EDIT</button>
                 <ul>
                     <li v-for="tag in movie.tags" :key="tag.id">
                         {{ tag.name }}
