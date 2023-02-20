@@ -88,6 +88,17 @@ export default {
 
             this.state.movieForm = true;
         },
+        deleteMovie(movie) {
+            axios
+                .delete(API + "movie/delete/" + movie.id)
+                .then((res) => {
+                    const data = res.data;
+                    const success = data.success;
+
+                    if (success) this.updateData();
+                })
+                .catch((err) => console.log);
+        },
     },
     mounted() {
         this.updateData();
@@ -144,6 +155,7 @@ export default {
                 {{ movie.name }}
                 <br />
                 <button @click="editMovie(movie)">EDIT</button>
+                <button @click="deleteMovie(movie)">DELETE</button>
                 <ul>
                     <li v-for="tag in movie.tags" :key="tag.id">
                         {{ tag.name }}
