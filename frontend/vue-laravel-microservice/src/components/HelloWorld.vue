@@ -4,25 +4,29 @@ import axios from "axios";
 const API_URL = "http://localhost:8000/api/";
 const API_VER = "v1/";
 const API = API_URL + API_VER;
-
+// contiene un oggetto con una sola chiave tags_id con valore iniziale vuoto ([]), viene utilizzato in seguito come valore iniziale per il form di creazione/modifica di un nuovo film, quando l'utente apre il form, tutte le opzioni sono impostate su valori vuoti
 const EMPTY_NEW_MOVIE = {
     tags_id: [],
 };
 export default {
+    // La proprietà data() del componente definisce un oggetto con diverse proprietà, tra cui movies, genres e tags, che contengono rispettivamente l'elenco dei film, dei generi e dei tag recuperati dall'API.
     data() {
         return {
             movies: [],
             genres: [],
             tags: [],
 
+            // La proprietà state definisce un oggetto con la proprietà movieForm, che viene utilizzata per visualizzare o nascondere un form per la creazione di un nuovo film.
             state: {
                 movieForm: false,
             },
 
+            // un oggetto che contiene le informazioni di un nuovo film da inserire nel database
             new_movie: { ...EMPTY_NEW_MOVIE },
         };
     },
     methods: {
+        // Il metodo updateData() viene utilizzato per recuperare i dati dal backend dell'API. Quando il risultato della richiesta HTTP viene restituito, i dati vengono elaborati e assegnati alle proprietà movies, genres e tags.
         updateData() {
             axios
                 .get(API + "movie/all")
@@ -44,24 +48,28 @@ export default {
                 })
                 .catch((err) => console.log);
         },
+        // Il metodo closeForm() viene utilizzato per ripristinare il form per la creazione di un nuovo film allo stato iniziale.
         closeForm() {
+            // quando l'utente apre il form per creare un nuovo film, i campi saranno vuoti
             this.new_movie = { ...EMPTY_NEW_MOVIE };
+            //  imposta state.movieForm a false, il che significa che il form non è attualmente aperto
             this.state.movieForm = false;
         },
+        // Il metodo submitMovie(e) viene utilizzato per inviare i dati del nuovo film al backend dell'API. Quando la richiesta HTTP viene restituita con successo, il form viene chiuso e i dati vengono aggiornati con il metodo updateData()
         submitMovie(e) {
             e.preventDefault();
 
             const new_movie = this.new_movie;
+            // viene creato un URL per l'API, a seconda che l'oggetto new_movie contenga o meno una proprietà "id" viene concatenata la stringa "movie/update/" o "movie/store/"
             const actualApi =
                 API +
                 ("id" in new_movie
-                    ? "movie/update/" + this.new_movie.id
-                    : "movie/store");
-
-            console.log(new_movie);
-            console.log(actualApi);
-
+                    ? // Se new_movie contiene un ID, significa che è un oggetto esistente che deve essere aggiornato nel database
+                      "movie/update/" + this.new_movie.id
+                    : // se new_movie non contiene un ID, significa che è un nuovo oggetto che deve essere creato nel database,
+                      "movie/store");
             axios
+                // La variabile actualApi viene usata per specificare l'endpoint API a cui inviare la richiesta
                 .post(actualApi, new_movie)
                 .then((res) => {
                     const data = res.data;
@@ -74,20 +82,25 @@ export default {
                 })
                 .catch((err) => console.log);
         },
+        // Il metodo editMovie(movie) viene utilizzato per popolare il form di creazione di un nuovo film con i dati del film selezionato. Questo metodo è chiamato quando l'utente sceglie di modificare un film esistente
         editMovie(movie) {
-            console.log("movie", movie);
-            console.log("new_movie", this.new_movie);
-
+            //  tutte le proprietà dell'oggetto movie vengono copiate nell'oggetto new_movie
             this.new_movie = { ...movie };
 
+            //  l'array tags_id dell'oggetto new_movie viene inizializzato come un array vuoto
             this.new_movie.tags_id = [];
-            for (let x = 0; x < movie.tags.length; x++) {
-                const tag = movie.tags[x];
+
+            // un ciclo for per iterare sull'array tags dell'oggetto movie e copiare gli ID dei tag nell'array tags_id dell'oggetto new_movie
+            for (let i = 0; i < movie.tags.length; i++) {
+                const tag = movie.tags[i];
+                // in questo modo, i tag del film selezionato vengono selezionati automaticamente nella form di modifica
                 this.new_movie.tags_id.push(tag.id);
             }
 
+            //  indica all'app che deve mostrare il form di modifica del film selezionato
             this.state.movieForm = true;
         },
+        // Il metodo deleteMovie(movie) viene utilizzato per eliminare un film dal database. Quando la richiesta HTTP viene restituita con successo, i dati vengono aggiornati con il metodo updateData()
         deleteMovie(movie) {
             axios
                 .delete(API + "movie/delete/" + movie.id)
